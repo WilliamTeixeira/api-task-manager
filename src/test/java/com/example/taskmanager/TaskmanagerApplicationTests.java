@@ -1,10 +1,10 @@
-package com.taskmanager.taskmanager;
+package com.example.taskmanager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TaskManagerApplicationTests {
+class TaskmanagerApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -8,13 +8,13 @@
 		<version>3.1.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.taskmanager</groupId>
-	<artifactId>task-manager</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>taskmanager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>task-manager</name>
-	<description>Program to manage tasks</description>
+	<name>taskmanager</name>
+	<description>Program to manage your tasks</description>
 	<properties>
-		<java.version>20</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
