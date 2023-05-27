@@ -1,6 +1,8 @@
 package com.example.taskmanager.domain;
 
 
+import com.example.taskmanager.domain.person.Person;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
