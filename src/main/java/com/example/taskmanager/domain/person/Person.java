@@ -19,6 +19,13 @@ public class Person {
         this.email = dto.email();
         this.address = new Address(dto.address());
     }
-
-
+    public Person(PersonDetailDTO dto){
+        this.id = dto.id();
+        this.name = dto.name();
+        this.email = dto.email();
+        this.address = new Address(dto.address());
+    }
+    public void setNexId(Long nexId) {
+        this.id = nexId + 1l;
+    }
 }

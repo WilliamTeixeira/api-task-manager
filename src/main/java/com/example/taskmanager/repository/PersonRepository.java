@@ -1,4 +1,9 @@
 package com.example.taskmanager.repository;
 
-public class PersonRepository {
+import com.example.taskmanager.domain.person.Person;
+
+import java.util.List;
+
+public interface PersonRepository  {
+    List<Person> listAll();
 }
