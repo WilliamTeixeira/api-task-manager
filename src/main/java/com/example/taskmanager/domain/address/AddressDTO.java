@@ -9,9 +9,9 @@ public record AddressDTO(
         @NotBlank String neighborhood,
         @NotBlank String city,
         @NotBlank String uf,
-        Integer ibge,
+        String ibge,
         String complement,
-        Integer number){
+        String number){
     public AddressDTO(Address address) {
         this(address.getCep(),
             address.getStreet(),

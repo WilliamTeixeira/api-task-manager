@@ -1,21 +1,23 @@
 package com.example.taskmanager.domain.address;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Embeddable
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Address {
     private String cep;
     private String street;
-    private String  neighborhood;
-    private String  city;
-    private String  uf;
-    private Integer  ibge;
-    private String  complement;
-    private Integer number;
+    private String neighborhood;
+    private String city;
+    private String uf;
+    private String ibge;
+    private String complement;
+    private String number;
 
     public Address(AddressDTO dto){
         this.cep = dto.cep();

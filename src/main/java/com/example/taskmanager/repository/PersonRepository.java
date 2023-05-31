@@ -1,9 +1,7 @@
 package com.example.taskmanager.repository;
 
 import com.example.taskmanager.domain.person.Person;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
-public interface PersonRepository  {
-    List<Person> listAll();
+public interface PersonRepository extends JpaRepository<Person, Long> {
 }

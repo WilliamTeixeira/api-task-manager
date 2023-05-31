@@ -1,3 +1,11 @@
 server:
   error:
     include-stacktrace: never
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost/task_manager?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrival=true
+    username: root
+    password: root
+    hibernate: update

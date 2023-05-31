@@ -17,7 +17,7 @@ public class PersonService {
     private static List<PersonDetailDTO> personList;
 
     static {
-        AddressDTO adress = new AddressDTO("36015000","Rua Espirito Santo","Centro","Juiz de Fora","MG",null,"",397);
+        AddressDTO adress = new AddressDTO("36015000","Rua Espirito Santo","Centro","Juiz de Fora","MG",null,"","397");
         personList =  new ArrayList<>(List.of(
                 new PersonDetailDTO(1l, "William Teixeira", "email@email.com.br", adress),
                 new PersonDetailDTO(2l, "Flavia Carvalho", "email@email.com.br", adress)));
