@@ -1,52 +1,53 @@
 package com.example.taskmanager.service;
 
-import com.example.taskmanager.domain.address.AddressDTO;
 import com.example.taskmanager.domain.person.Person;
 import com.example.taskmanager.domain.person.PersonCreateDTO;
 import com.example.taskmanager.domain.person.PersonDetailDTO;
-import jakarta.validation.Valid;
+import com.example.taskmanager.repository.PersonRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 public class PersonService {
-    private static List<PersonDetailDTO> personList;
 
-    static {
-        AddressDTO adress = new AddressDTO("36015000","Rua Espirito Santo","Centro","Juiz de Fora","MG",null,"","397");
-        personList =  new ArrayList<>(List.of(
-                new PersonDetailDTO(1l, "William Teixeira", "email@email.com.br", adress),
-                new PersonDetailDTO(2l, "Flavia Carvalho", "email@email.com.br", adress)));
-    }
-    public List<PersonDetailDTO> listAll(){
-        return personList;
+    private final PersonRepository repository;
+
+    public Page<PersonDetailDTO> listAll(Pageable pagination){
+        return repository.findAll(pagination)
+                .map(PersonDetailDTO::new);
     }
 
     public PersonDetailDTO findById(Long id) {
-        return personList.stream()
-                .filter(p -> p.id().equals(id))
-                .findFirst()
+        return repository.findById(id)
+                .map(PersonDetailDTO::new)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Person not found"));
-
     }
 
-    public Person save(PersonCreateDTO personCreateDTO) {
-        Long nexId = (long) personList.size();
+    public PersonDetailDTO save(PersonCreateDTO personCreateDTO) {
+        Person newPerson = repository.save(new Person(personCreateDTO));
 
-        Person newPerson = new Person(personCreateDTO);
-        newPerson.setNexId(nexId);
-
-        personList.add(new PersonDetailDTO(newPerson));
-
-        return newPerson;
+        return new PersonDetailDTO(newPerson);
     }
 
     public void delete(Long id) {
-        personList.remove(findById(id));
+        Person person = repository.getReferenceById(id);
+        repository.delete(person);
+    }
+
+    public PersonDetailDTO replace(PersonDetailDTO personDetailDTO){
+        Person savedPerson = repository.getReferenceById(personDetailDTO.id());
+
+        Person personToSave = new Person(personDetailDTO);
+        personToSave.setId(savedPerson.getId());
+
+        Person newPersonSaved = repository.save(personToSave);
+
+        return new PersonDetailDTO(newPersonSaved);
     }
 
 }
