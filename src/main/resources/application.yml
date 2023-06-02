@@ -8,3 +8,7 @@ spring:
     url: jdbc:mysql://localhost/task_manager?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
     username: root
     password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

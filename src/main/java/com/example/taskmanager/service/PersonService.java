@@ -7,9 +7,7 @@ import com.example.taskmanager.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +21,7 @@ public class PersonService {
     }
 
     public PersonDetailDTO findById(Long id) {
-        return repository.findById(id)
-                .map(PersonDetailDTO::new)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Person not found"));
+        return new PersonDetailDTO(repository.getReferenceById(id));
     }
 
     public PersonDetailDTO save(PersonCreateDTO personCreateDTO) {
