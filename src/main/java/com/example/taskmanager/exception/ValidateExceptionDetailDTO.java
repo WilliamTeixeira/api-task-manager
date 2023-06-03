@@ -1,9 +1,18 @@
 package com.example.taskmanager.exception;
 
-import org.springframework.validation.FieldError;
+import lombok.Builder;
+import lombok.Data;
 
-public record ValidateExceptionDetailDTO(String field, String message) {
-    public ValidateExceptionDetailDTO(FieldError error){
-        this(error.getField(), error.getDefaultMessage());
-    }
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+@Builder
+public class ValidateExceptionDetailDTO {
+    private String title;
+    private int status;
+    private String details;
+    private String developerMessage;
+    private LocalDateTime timestamp;
+    private List<ValidateExceptionDetailItemDTO> fields;
 }
