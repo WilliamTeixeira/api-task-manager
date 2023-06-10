@@ -46,14 +46,35 @@ public class PersonController {
         return ResponseEntity.ok(person);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<PersonDetailDTO>> list(@PageableDefault(size = 10, sort = {"id"})Pageable pagination){
-        return ResponseEntity.ok(personService.listAll(pagination));
-    }
-
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<PersonDetailDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(personService.findById(id));
     }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<PersonDetailDTO> findByName(@PathVariable String name){
+        return ResponseEntity.ok(personService.findByName(name));
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<PersonDetailDTO> findByEmail(@PathVariable String email){
+        return ResponseEntity.ok(personService.findByEmail(email));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<PersonDetailDTO>> listAll(@PageableDefault(size = 10, sort = {"id"})Pageable pageable){
+        return ResponseEntity.ok(personService.listAll(pageable));
+    }
+
+    @GetMapping("/all/name/{name}")
+    public ResponseEntity<Page<PersonDetailDTO>> listAllByName(@PathVariable String name, @PageableDefault(size = 10, sort = {"name"})Pageable pageable){
+        return ResponseEntity.ok(personService.listAllByName(name, pageable));
+    }
+
+    @GetMapping("/all/email/{email}")
+    public ResponseEntity<Page<PersonDetailDTO>> listAllByEmail(@PathVariable String email, @PageableDefault(size = 10, sort = {"email"})Pageable pageable){
+        return ResponseEntity.ok(personService.listAllByEMail(email, pageable));
+    }
+
 
 }
