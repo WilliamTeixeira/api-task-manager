@@ -1,7 +1,7 @@
 package com.example.taskmanager.repository;
 
-import com.example.taskmanager.domain.address.Address;
 import com.example.taskmanager.domain.person.Person;
+import com.example.taskmanager.mock.PersonRepositoryMock;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given that all fields are correct When persisting the Person entity Then the transaction will be successful")
     void savePersistsPersonWhenSuccessful(){
-        Person personToBeSave = createPerson();
+        Person personToBeSave = PersonRepositoryMock.createPersonToBeSaved();
 
         Person personSaved = this.repository.save(personToBeSave);
 
@@ -39,7 +39,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given that all fields are correct When update the Person entity Then the transaction will be successful")
     void saveUpdatePersonWhenSuccessful(){
-        Person personToBeSave = createPerson();
+        Person personToBeSave = PersonRepositoryMock.createPersonToBeSaved();
         Person personSaved = this.repository.save(personToBeSave);
 
         personSaved.setName("Changed Name");
@@ -54,7 +54,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given that all fields are correct When delete the Person entity Then the transaction will be successful")
     void deleteRemovePersonWhenSuccessful(){
-        Person personToBeSave = createPerson();
+        Person personToBeSave = PersonRepositoryMock.createPersonToBeSaved();
         Person personSaved = this.repository.save(personToBeSave);
 
         this.repository.delete(personSaved);
@@ -67,7 +67,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given the ID field is correct When getReferenceByID Then return a Person entity wil be successful")
     void getReferenceByIdReturnPersonWhenSuccessful(){
-        Person personToBeSaved = createPerson();
+        Person personToBeSaved = PersonRepositoryMock.createPersonToBeSaved();
         Person personSaved = this.repository.save(personToBeSaved);
 
         Person findedPerson = this.repository.getReferenceById(personSaved.getId());
@@ -79,7 +79,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given the Name field is correct When findByName Then return a Person entity wil be successful")
     void findByNameReturnPersonWhenSuccessful(){
-        Person personToBeSaved = createPerson();
+        Person personToBeSaved = PersonRepositoryMock.createPersonToBeSaved();
         Person personSaved = this.repository.save(personToBeSaved);
 
         Person findedPerson = this.repository.findByName(personSaved.getName());
@@ -100,7 +100,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given the E-Mail field is correct When findByEmail Then return a Person entity wil be successful")
     void findByEmailReturnPersonWhenSuccessful(){
-        Person personToBeSaved = createPerson();
+        Person personToBeSaved = PersonRepositoryMock.createPersonToBeSaved();
         Person personSaved = this.repository.save(personToBeSaved);
 
         Person findedPerson = this.repository.findByEmail(personSaved.getEmail());
@@ -121,7 +121,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given that a fraction of a Name field exists within the list of Person entity When findByNameContainingIgnoreCase Then returns a list of Person entity wil be successful")
     void findByNameContainingIgnoreCaseReturnsListOfPersonWhenSuccessful(){
-        List<Person> personList = createListOfPerson();
+        List<Person> personList = PersonRepositoryMock.createListOfPerson();
         personList.forEach(personToBeSaved -> this.repository.save(personToBeSaved));
 
         Person personToCompare = personList.get(0);
@@ -147,7 +147,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given that a fraction of a Name field not exists within the list of Person entity When findByNameContainingIgnoreCase Then returns a empty 'Page' list of Person entity")
     void findByNameContainingIgnoreCaseReturnsEmptyListOfPersonWhenPersonNotFound(){
-        List<Person> personList = createListOfPerson();
+        List<Person> personList = PersonRepositoryMock.createListOfPerson();
         personList.forEach(personToBeSaved -> this.repository.save(personToBeSaved));
 
         String fractionOfName = "xxxx";
@@ -165,7 +165,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given that a fraction of a Email field exists within the list of Person entity When findByNameContainingIgnoreCase Then returns a list of Person entity wil be successful")
     void findByEmailContainingIgnoreCaseReturnsListOfPersonWhenSuccessful(){
-        List<Person> personList = createListOfPerson();
+        List<Person> personList = PersonRepositoryMock.createListOfPerson();
         personList.forEach(personToBeSaved -> this.repository.save(personToBeSaved));
 
         Person personToCompare = personList.get(0);
@@ -191,7 +191,7 @@ class PersonRepositoryTest {
     @Test
     @DisplayName("Given that a fraction of a Email field not exists within the list of Persons entity When findByEmailContainingIgnoreCase Then returns a empty 'Page' list of Person entity")
     void findByEmailContainingIgnoreCaseReturnsEmptyListOfPersonWhenPersonNotFound(){
-        List<Person> personList = createListOfPerson();
+        List<Person> personList = PersonRepositoryMock.createListOfPerson();
         personList.forEach(personToBeSaved -> this.repository.save(personToBeSaved));
 
         String fractionOfEmail = "xxxx";
@@ -209,59 +209,5 @@ class PersonRepositoryTest {
 
 
 
-    Person createPerson(){
-        return Person.builder()
-                .name("Fulano Example")
-                .email("fulano@mail.com")
-                .address(
-                        Address.builder()
-                                .cep("99999999")
-                                .street("Street A")
-                                .number("123")
-                                .complement("01")
-                                .neighborhood("Downtown")
-                                .city("Example City")
-                                .uf("MG")
-                                .ibge("123456")
-                                .build()
-                )
-                .build();
-    }
-    List<Person> createListOfPerson(){
-        return List.of(
-                Person.builder()
-                .name("Aaaaaa Example")
-                .email("aaaaaa@mail.com")
-                .address(
-                        Address.builder()
-                                .cep("99999999")
-                                .street("Street A")
-                                .number("123")
-                                .complement("01")
-                                .neighborhood("Downtown")
-                                .city("Example City")
-                                .uf("MG")
-                                .ibge("123456")
-                                .build()
-                )
-                .build(),
 
-                Person.builder()
-                .name("Bbbbbb Example")
-                .email("bbbbbb@mail.com")
-                .address(
-                        Address.builder()
-                                .cep("99999999")
-                                .street("Street A")
-                                .number("123")
-                                .complement("01")
-                                .neighborhood("Downtown")
-                                .city("Example City")
-                                .uf("MG")
-                                .ibge("123456")
-                                .build()
-                )
-                .build()
-        );
-    }
 }

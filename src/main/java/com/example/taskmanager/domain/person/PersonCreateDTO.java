@@ -10,4 +10,7 @@ public record PersonCreateDTO(
         @NotBlank String name,
         @NotBlank @Email String email,
         @NotNull @Valid AddressDTO address) {
+    public PersonCreateDTO(Person person){
+        this(person.getName(), person.getEmail(), new AddressDTO(person.getAddress()));
+    }
 }

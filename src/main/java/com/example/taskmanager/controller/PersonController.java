@@ -27,7 +27,7 @@ public class PersonController {
     public ResponseEntity create(@RequestBody @Valid PersonCreateDTO personCreateDTO, UriComponentsBuilder uriBuilder){
         PersonDetailDTO  person = personService.save(personCreateDTO);
 
-        var uri =uriBuilder.path("person/{id}").buildAndExpand(person.id()).toUri();
+        var uri = uriBuilder.path("person/{id}").buildAndExpand(person.id()).toUri();
 
         return ResponseEntity.created(uri).body(person);
     }
