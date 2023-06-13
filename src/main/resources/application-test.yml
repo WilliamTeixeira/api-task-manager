@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/task_manager_test?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
