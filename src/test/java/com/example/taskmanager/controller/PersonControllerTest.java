@@ -5,6 +5,7 @@ import com.example.taskmanager.domain.person.PersonDetailDTO;
 import com.example.taskmanager.mock.PersonRepositoryMock;
 import com.example.taskmanager.mock.PersonServiceMock;
 import com.example.taskmanager.service.PersonService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,35 +30,31 @@ class PersonControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private JacksonTester<PersonCreateDTO> personCreateDTOJason;
-
     @Autowired
     private JacksonTester<PersonDetailDTO> personDetailDTOJason;
-
     @MockBean
     private PersonService personService;
 
     @BeforeEach
-    void setup(){
-
+    void setup() {
         Mockito.when(personService.save(ArgumentMatchers.any()))
-                        .thenReturn(PersonServiceMock.save());
+                .thenReturn(PersonServiceMock.save());
 
-        //Mockito.doNothing().when(personService.delete(ArgumentMatchers.any()));
+        Mockito.doNothing().when(personService).delete(ArgumentMatchers.anyLong());
 
         Mockito.when(personService.replace(ArgumentMatchers.any()))
-                        .thenReturn(PersonServiceMock.replace());
+                .thenReturn(PersonServiceMock.replace());
 
         Mockito.when(personService.findById(ArgumentMatchers.anyLong()))
                 .thenReturn(PersonServiceMock.findBy());
 
         Mockito.when(personService.findByName(ArgumentMatchers.anyString()))
-                        .thenReturn(PersonServiceMock.findBy());
+                .thenReturn(PersonServiceMock.findBy());
 
         Mockito.when(personService.findByEmail(ArgumentMatchers.anyString()))
-                        .thenReturn(PersonServiceMock.findBy());
+                .thenReturn(PersonServiceMock.findBy());
 
         Mockito.when(personService.listAll(ArgumentMatchers.any()))
                 .thenReturn(PersonServiceMock.listAll());
@@ -77,14 +74,15 @@ class PersonControllerTest {
         var jsonToBeCompare = personDetailDTOJason.write(new PersonDetailDTO(PersonRepositoryMock.createValidPerson())).getJson();
 
         MockHttpServletResponse response = mockMvc.perform(
-                MockMvcRequestBuilders.post("/persons")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonToBeSend))
+                        MockMvcRequestBuilders.post("/persons")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonToBeSend))
                 .andReturn().getResponse();
 
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
+
     @Test
     @DisplayName("Given that any  fields are incorrect When create method is called Then returns http bad request status 400")
     void createReturnBadRequestWhenAnyFieldAreIncorrect() throws Exception {
@@ -95,7 +93,27 @@ class PersonControllerTest {
     }
 
     @Test
-    void delete() {
+    @DisplayName("Given that Id field is correct When delete method is called Then the transaction will be successful")
+    void deletePersistsPersonWhenSuccessful() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/persons/1"))
+                .andReturn().getResponse();
+
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("Given that Id fields are not found When delete method is called Then returns http not found status 404")
+    void deleteReturnNotFoundWhenIdNotFound() throws Exception {
+        Mockito.doThrow(new EntityNotFoundException("Person Not Found"))
+                .when(personService).delete(ArgumentMatchers.anyLong());
+
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/persons/999"))
+                .andReturn()
+                .getResponse();
+
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -113,44 +131,48 @@ class PersonControllerTest {
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
+
     @Test
     @DisplayName("Given that any fields are incorrect When update method is called Then returns http bad request status 400")
     void updateReturnBadRequestWhenAnyFieldAreIncorrect() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                MockMvcRequestBuilders.put("/persons"))
+                        MockMvcRequestBuilders.put("/persons"))
                 .andReturn()
                 .getResponse();
 
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
     @Test
-    @DisplayName("Given that the field Id exist When findById method is called Then  the transaction will be successful")
+    @DisplayName("Given that Id field exist When findById method is called Then  the transaction will be successful")
     void findByIdFindPersonWhenSuccessful() throws Exception {
         var jsonToBeCompare = personDetailDTOJason.write(new PersonDetailDTO(PersonRepositoryMock.createValidPerson())).getJson();
 
         MockHttpServletResponse response = mockMvc.perform(
-                MockMvcRequestBuilders.get("/persons/id/1"))
+                        MockMvcRequestBuilders.get("/persons/id/1"))
                 .andReturn()
                 .getResponse();
 
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
+
     @Test
-    @DisplayName("Given that Id fields are not found When findById method is called Then returns http not found status 404")
+    @DisplayName("Given that Id field are not found When findById method is called Then returns http not found status 404")
     void findByIdReturnNotFoundWhenIdNotFound() throws Exception {
         Mockito.when(personService.findById(ArgumentMatchers.anyLong()))
                 .thenThrow(new EntityNotFoundException("Person Not Found"));
 
         MockHttpServletResponse response = mockMvc.perform(
-                MockMvcRequestBuilders.get("/persons/id/999"))
+                        MockMvcRequestBuilders.get("/persons/id/999"))
                 .andReturn()
                 .getResponse();
 
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
+
     @Test
-    @DisplayName("Given that the field Name exist When findByName method is called Then the transaction will be successful")
+    @DisplayName("Given that Name field exist When findByName method is called Then the transaction will be successful")
     void findByNameFindPersonWhenSuccessful() throws Exception {
         var jsonToBeCompare = personDetailDTOJason.write(new PersonDetailDTO(PersonRepositoryMock.createValidPerson())).getJson();
 
@@ -162,21 +184,23 @@ class PersonControllerTest {
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
+
     @Test
-    @DisplayName("Given that Name fields are not found When findByName method is called Then returns http not found status 404")
+    @DisplayName("Given that Name field are not found When findByName method is called Then returns http not found status 404")
     void findByNameReturnNotFoundWhenNameNotFound() throws Exception {
         Mockito.when(personService.findByName(ArgumentMatchers.anyString()))
                 .thenThrow(new EntityNotFoundException("Person Not Found"));
 
         MockHttpServletResponse response = mockMvc.perform(
-                        MockMvcRequestBuilders.get("/persons/name/999"))
+                        MockMvcRequestBuilders.get("/persons/name/notfound"))
                 .andReturn()
                 .getResponse();
 
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
+
     @Test
-    @DisplayName("Given that the field Email exist When findByEmail method is called Then the transaction will be successful")
+    @DisplayName("Given that Email field exist When findByEmail method is called Then the transaction will be successful")
     void findByEmailFindPersonWhenSuccessful() throws Exception {
         var jsonToBeCompare = personDetailDTOJason.write(new PersonDetailDTO(PersonRepositoryMock.createValidPerson())).getJson();
 
@@ -188,6 +212,7 @@ class PersonControllerTest {
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
+
     @Test
     @DisplayName("Given that Email fields are not found When findByEmail method is called Then returns http not found status 404")
     void findByEmailReturnNotFoundWhenNameNotFound() throws Exception {
@@ -203,14 +228,95 @@ class PersonControllerTest {
     }
 
     @Test
-    void listAll() {
+    @DisplayName("Given that persons exists in database When listAll method is called Then the transaction will be successful")
+    void listAllReturnsAllPersonWhenSuccessful() throws Exception {
+        String jsonToBeCompare = new ObjectMapper().writeValueAsString(PersonServiceMock.listAll());
+
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.get("/persons/all"))
+                .andReturn()
+                .getResponse();
+
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
 
     @Test
-    void listAllByName() {
+    @DisplayName("Given that no persons exists in database When listAll method is called Then returns a empty list")
+    void listAllReturnEmptyListWhenNoPersonIsFound() throws Exception {
+        Mockito.when(personService.listAll(ArgumentMatchers.any()))
+                .thenReturn(PersonServiceMock.listEmpty());
+
+        String jsonToBeCompare = new ObjectMapper().writeValueAsString(PersonServiceMock.listEmpty());
+
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.get("/persons/all"))
+                .andReturn()
+                .getResponse();
+
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
 
     @Test
-    void listAllByEmail() {
+    @DisplayName("Given that persons exists in database When listAllByName method is called Then the transaction will be successful")
+    void listAllByNameReturnsAllPersonWhenSuccessful() throws Exception {
+        String jsonToBeCompare = new ObjectMapper().writeValueAsString(PersonServiceMock.listAll());
+
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.get("/persons/all/name/success"))
+                .andReturn()
+                .getResponse();
+
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
+    }
+
+    @Test
+    @DisplayName("Given that no persons exists in database When listAllByName method is called Then returns a empty list")
+    void listAllByNameReturnEmptyListWhenNoPersonIsFound() throws Exception {
+        Mockito.when(personService.listAllByName(ArgumentMatchers.anyString(), ArgumentMatchers.any()))
+                .thenReturn(PersonServiceMock.listEmpty());
+
+        String jsonToBeCompare = new ObjectMapper().writeValueAsString(PersonServiceMock.listEmpty());
+
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.get("/persons/all/name/notfound"))
+                .andReturn()
+                .getResponse();
+
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
+    }
+
+    @Test
+    @DisplayName("Given that persons exists in database When listAllByEmail method is called Then the transaction will be successful")
+    void listAllByEmailReturnsAllPersonWhenSuccessful() throws Exception {
+        String jsonToBeCompare = new ObjectMapper().writeValueAsString(PersonServiceMock.listAll());
+
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.get("/persons/all/email/success"))
+                .andReturn()
+                .getResponse();
+
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
+    }
+
+    @Test
+    @DisplayName("Given that no persons exists in database When listAllByEmail method is called Then returns a empty list")
+    void listAllByEmailReturnEmptyListWhenNoPersonIsFound() throws Exception {
+        Mockito.when(personService.listAllByEMail(ArgumentMatchers.anyString(), ArgumentMatchers.any()))
+                .thenReturn(PersonServiceMock.listEmpty());
+
+        String jsonToBeCompare = new ObjectMapper().writeValueAsString(PersonServiceMock.listEmpty());
+
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.get("/persons/all/email/notfound"))
+                .andReturn()
+                .getResponse();
+
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
 }
