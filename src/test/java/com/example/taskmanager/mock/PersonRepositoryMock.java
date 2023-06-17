@@ -2,6 +2,8 @@ package com.example.taskmanager.mock;
 
 import com.example.taskmanager.domain.address.Address;
 import com.example.taskmanager.domain.person.Person;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
@@ -120,5 +122,9 @@ public class PersonRepositoryMock {
                         )
                         .build()
         );
+    }
+
+    public static Page<Person> createPageOfValidPerson(){
+        return new PageImpl<>(createListOfValidPerson());
     }
 }
