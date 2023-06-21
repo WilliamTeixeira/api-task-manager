@@ -52,8 +52,10 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that all fields are correct When perform a http post request for persons endpoint Then the transaction will be successful")
     void createPersistsPersonWhenSuccessful() throws Exception {
+        //Given
         var jsonToBeSend = personCreateDTOJason.write(new PersonCreateDTO(PersonRepositoryMock.createPersonToBeSaved())).getJson();
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.post("/persons")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -63,6 +65,7 @@ public class PersonIntegrationTest {
         var personDetailDTO = new PersonDetailDTO(personRepository.findByName("Fulano Example"));
         var jsonToBeCompare = personDetailDTOJason.write(personDetailDTO).getJson();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
@@ -70,23 +73,29 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that any  fields are incorrect When perform a http post request for persons endpoint Then returns http bad request status 400")
     void createReturnBadRequestWhenAnyFieldAreIncorrect() throws Exception {
+        //Given
+        //When
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.post("/persons"))
                 .andReturn().getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @DisplayName("Given that Id field is correct When perform a http delete request for persons endpoint Then the transaction will be successful")
     void deletePersistsPersonWhenSuccessful() throws Exception {
+        //Given
         Person personToBeDeleted = personRepository.save(PersonRepositoryMock.createValidPerson());
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.delete("/persons/" + personToBeDeleted.getId()))
                 .andReturn().getResponse();
 
         Person personNotFound = personRepository.findByName("Fulano Example");
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
         Assertions.assertThat(personNotFound).isNull();
     }
@@ -94,11 +103,13 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that all fields are correct When perform a http put request for persons endpoint Then the transaction will be successful")
     void updatePersistsPersonWhenSuccessful() throws Exception {
+        //Given
         var personToBeUpdate = personRepository.save(PersonRepositoryMock.createValidPerson());
         personToBeUpdate.setName("Fulano Updated");
 
         var jsonToBeSend = personDetailDTOJason.write(new PersonDetailDTO(personToBeUpdate)).getJson();
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.put("/persons")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -108,6 +119,7 @@ public class PersonIntegrationTest {
         var personUpdated = personRepository.findByName("Fulano Updated");
         var jsonToBeCompare = personDetailDTOJason.write(new PersonDetailDTO(personUpdated)).getJson();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
@@ -115,19 +127,24 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that any fields are incorrect When perform a http put request for persons endpoint Then returns http bad request status 400")
     void updateReturnBadRequestWhenAnyFieldAreIncorrect() throws Exception {
+        //Given
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.put("/persons"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @DisplayName("Given that Id field exist When perform a http get request for persons/id endpoint Then the transaction will be successful")
     void findByIdFindPersonWhenSuccessful() throws Exception {
+        //Given
         var personToBeFound = personRepository.save(PersonRepositoryMock.createValidPerson());
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/id/" + personToBeFound.getId()))
                 .andReturn()
@@ -135,6 +152,7 @@ public class PersonIntegrationTest {
 
         var jsonToBeCompare = personDetailDTOJason.write(new PersonDetailDTO(personToBeFound)).getJson();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
@@ -142,19 +160,24 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that Id field are not found When perform a http get request for persons/id endpoint Then returns http not found status 404")
     void findByIdReturnNotFoundWhenIdNotFound() throws Exception {
+        //Given
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/id/999"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     @DisplayName("Given that Name field exist When perform a http get request for persons/name endpoint Then the transaction will be successful")
     void findByNameFindPersonWhenSuccessful() throws Exception {
+        //Given
         var personToBeFound = personRepository.save(PersonRepositoryMock.createValidPerson());
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/name/" + personToBeFound.getName()))
                 .andReturn()
@@ -162,6 +185,7 @@ public class PersonIntegrationTest {
 
         var jsonToBeCompare = personDetailDTOJason.write(new PersonDetailDTO(personToBeFound)).getJson();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
 
@@ -170,19 +194,24 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that Name field are not found When perform a http get request for persons/name endpoint Then returns http not found status 404")
     void findByNameReturnNotFoundWhenNameNotFound() throws Exception {
+        //Given
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/name/notfound"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     @DisplayName("Given that Email field exist When perform a http get request for persons/email endpoint Then the transaction will be successful")
     void findByEmailFindPersonWhenSuccessful() throws Exception {
+        //Given
         var personToBeFound = personRepository.save(PersonRepositoryMock.createValidPerson());
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/email/" + personToBeFound.getEmail()))
                 .andReturn()
@@ -190,6 +219,7 @@ public class PersonIntegrationTest {
 
         var jsonToBeCompare = personDetailDTOJason.write(new PersonDetailDTO(personToBeFound)).getJson();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
@@ -197,28 +227,33 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that Email fields are not found When perform a http get request for persons/email endpoint Then returns http not found status 404")
     void findByEmailReturnNotFoundWhenNameNotFound() throws Exception {
+        //Given
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/email/notfound@mail.com"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    //TODO: o page retornado no response não fica igual ao json criado para a comparação
     @Test
     @DisplayName("Given that persons exists in database When perform a http get request for persons/all endpoint Then the transaction will be successful")
     void listAllReturnsAllPersonWhenSuccessful() throws Exception {
+        //Given
         var personList = personRepository.saveAll(PersonRepositoryMock.createListOfPerson());
         Pageable pageable = PageRequest.of(0,10, Sort.by("id"));
         PageImpl<Person> personPage = new PageImpl<>(personList, pageable,personList.size());
         var jsonToBeCompare = new ObjectMapper().writeValueAsString(personPage.map(PersonDetailDTO::new));
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/all"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
@@ -226,16 +261,19 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that no persons exists in database When perform a http get request for persons/all endpoint Then returns a empty list")
     void listAllReturnEmptyListWhenNoPersonIsFound() throws Exception {
+        //Given
         List<Person> personList = Collections.emptyList();
         Pageable pageable = PageRequest.of(0,10, Sort.by("id"));
         PageImpl<Person> personPage = new PageImpl<>(personList, pageable,personList.size());
         var jsonToBeCompare = new ObjectMapper().writeValueAsString(personPage.map(PersonDetailDTO::new));
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/all"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
@@ -243,6 +281,7 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that persons exists in database When perform a http get request for persons/all/name endpoint Then the transaction will be successful")
     void listAllByNameReturnsAllPersonWhenSuccessful() throws Exception {
+        //Given
         var personListSaved = personRepository.saveAll(PersonRepositoryMock.createListOfPerson());
 
         List<Person> personList = personListSaved.stream().filter(p -> p.getName().contains("Bbbbbb")).toList();
@@ -250,11 +289,13 @@ public class PersonIntegrationTest {
         PageImpl<Person> personPage = new PageImpl<>(personList, pageable,personList.size());
         var jsonToBeCompare = new ObjectMapper().writeValueAsString(personPage.map(PersonDetailDTO::new));
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/all/name/Bbbbbb"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
 
@@ -263,16 +304,19 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that no persons exists in database When perform a http get request for persons/all/name endpoint Then returns a empty list")
     void listAllByNameReturnEmptyListWhenNoPersonIsFound() throws Exception {
+        //Given
         List<Person> personList = Collections.emptyList();
         Pageable pageable = PageRequest.of(0,10, Sort.by("name"));
         PageImpl<Person> personPage = new PageImpl<>(personList, pageable,personList.size());
         var jsonToBeCompare = new ObjectMapper().writeValueAsString(personPage.map(PersonDetailDTO::new));
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/all/name/notfound"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
@@ -280,6 +324,7 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that persons exists in database When perform a http get request for persons/all/email endpoint Then the transaction will be successful")
     void listAllByEmailReturnsAllPersonWhenSuccessful() throws Exception {
+        //Given
         var personListSaved = personRepository.saveAll(PersonRepositoryMock.createListOfPerson());
 
         List<Person> personList = personListSaved.stream().filter(p -> p.getEmail().contains("bbbbbb")).toList();
@@ -287,11 +332,13 @@ public class PersonIntegrationTest {
         PageImpl<Person> personPage = new PageImpl<>(personList, pageable,personList.size());
         var jsonToBeCompare = new ObjectMapper().writeValueAsString(personPage.map(PersonDetailDTO::new));
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/all/email/bbbbbb"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
@@ -299,16 +346,19 @@ public class PersonIntegrationTest {
     @Test
     @DisplayName("Given that no persons exists in database When perform a http get request for persons/all/email endpoint Then returns a empty list")
     void listAllByEmailReturnEmptyListWhenNoPersonIsFound() throws Exception {
+        //Given
         List<Person> personList = Collections.emptyList();
         Pageable pageable = PageRequest.of(0,10, Sort.by("email"));
         PageImpl<Person> personPage = new PageImpl<>(personList, pageable,personList.size());
         var jsonToBeCompare = new ObjectMapper().writeValueAsString(personPage.map(PersonDetailDTO::new));
 
+        //When
         MockHttpServletResponse response = mockMvc.perform(
                         MockMvcRequestBuilders.get("/persons/all/email/notfound"))
                 .andReturn()
                 .getResponse();
 
+        //Then
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.getContentAsString()).isEqualTo(jsonToBeCompare);
     }
