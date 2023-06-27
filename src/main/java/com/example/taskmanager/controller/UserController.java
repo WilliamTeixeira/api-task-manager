@@ -1,8 +1,10 @@
 package com.example.taskmanager.controller;
 
+import com.example.taskmanager.configuration.security.TokenJwtDTO;
+import com.example.taskmanager.domain.user.User;
 import com.example.taskmanager.domain.user.UserLoginDTO;
+import com.example.taskmanager.service.TokenService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +23,22 @@ public class UserController {
    @Autowired
     private AuthenticationManager manager;
 
+   @Autowired
+   private TokenService tokenService;
+
     @PostMapping
     public ResponseEntity login(@RequestBody @Valid UserLoginDTO data){
         try{
             log.info(data);
-            var token = new UsernamePasswordAuthenticationToken(data.username(), data.password());
-            var authentication = manager.authenticate(token);
-            return ResponseEntity.ok().build();
+            var authenticationToken = new UsernamePasswordAuthenticationToken(data.username(), data.password());
+            var authentication = manager.authenticate(authenticationToken);
+            var jwtToken = tokenService.generateToken((User) authentication.getPrincipal());
+
+            return ResponseEntity.ok(new TokenJwtDTO(jwtToken));
+
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
 
         }
 
