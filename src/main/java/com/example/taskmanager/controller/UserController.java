@@ -1,47 +1,47 @@
 package com.example.taskmanager.controller;
 
-import com.example.taskmanager.configuration.security.TokenJwtDTO;
-import com.example.taskmanager.domain.user.User;
-import com.example.taskmanager.domain.user.UserLoginDTO;
-import com.example.taskmanager.service.TokenService;
+import com.example.taskmanager.domain.user.UserDetailDTO;
+import com.example.taskmanager.domain.user.UserReplaceDTO;
+import com.example.taskmanager.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
-@RequestMapping("/login")
+@RequestMapping("user")
+@RequiredArgsConstructor
 public class UserController {
 
-   @Autowired
-    private AuthenticationManager manager;
+    private final UserService userService;
 
-   @Autowired
-   private TokenService tokenService;
-
-    @PostMapping
-    public ResponseEntity login(@RequestBody @Valid UserLoginDTO data){
-        try{
-            log.info(data);
-            var authenticationToken = new UsernamePasswordAuthenticationToken(data.username(), data.password());
-            var authentication = manager.authenticate(authenticationToken);
-            var jwtToken = tokenService.generateToken((User) authentication.getPrincipal());
-
-            return ResponseEntity.ok(new TokenJwtDTO(jwtToken));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(e.getMessage());
-
-        }
-
-
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity delete(@PathVariable Long id){
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity update(@RequestBody @Valid UserReplaceDTO userReplaceDTO){
+        UserDetailDTO user = userService.replace(userReplaceDTO);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<UserDetailDTO> findByIde(@PathVariable Long id){
+        return ResponseEntity.ok(userService.findById(id));
+    }
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserDetailDTO> findByUsername(@PathVariable String username){
+        return ResponseEntity.ok(userService.findByUsername(username));
+    }
+
+
 }

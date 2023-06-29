@@ -1,20 +1,19 @@
 package com.example.taskmanager.domain.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 @Table(name = "users")
 @Entity(name = "User")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -25,10 +24,31 @@ public class User implements UserDetails {
     private Long id;
     private String username;
     private String password;
+    private String roles;
+
+    public User(UserDetailDTO dto) {
+        this.id = dto.id();
+        this.username = dto.username();
+        this.roles = dto.roles();
+    }
+
+    public User(UserCreateDTO dto) {
+        this.username = dto.username();
+        this.password = dto.password();
+        this.roles = dto.roles();
+    }
+
+    public User(UserReplaceDTO dto) {
+        this.id = dto.id();
+        this.username = dto.username();
+        this.password = dto.password();
+        this.roles = dto.roles();
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return Arrays.stream(roles.split(",")).map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override
