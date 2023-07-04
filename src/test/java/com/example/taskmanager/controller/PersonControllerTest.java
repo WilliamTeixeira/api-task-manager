@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @AutoConfigureJsonTesters
 @WebMvcTest(PersonController.class)
+@DisplayName("Test for Person Controller Endpoints")
 class PersonControllerTest {
 
     @Autowired
@@ -84,7 +85,7 @@ class PersonControllerTest {
     }
 
     @Test
-    @DisplayName("Given that any  fields are incorrect When create method is called Then returns http bad request status 400")
+    @DisplayName("Given that any fields are incorrect When create method is called Then returns http bad request status 400")
     void createReturnBadRequestWhenAnyFieldAreIncorrect() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.post("/persons"))
                 .andReturn().getResponse();
