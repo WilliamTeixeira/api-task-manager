@@ -22,18 +22,27 @@ class UserRepositoryTest {
     UserRepository repository;
 
     @Test
+    @DisplayName("Given the Name field is correct When findByUsername Then return a User entity wil be successful")
+    void findByUsernameReturnUserWhenSuccessful(){
+        User toBeSaved = new User(1l, "user@email.com", new BCryptPasswordEncoder().encode("password"), "ROLE_USER,ROLE_ADMIN");
+        User saved = this.repository.save(toBeSaved);
+
+        var founded = this.repository.findByUsername(saved.getUsername());
+
+        Assertions.assertThat(founded).isNotNull();
+        Assertions.assertThat(founded.getUsername()).isEqualTo(saved.getUsername());
+    }
+    @Test
     @DisplayName("Given the Name field is correct When findByName Then return a User entity wil be successful")
     void findByNameReturnUserWhenSuccessful(){
-        User userToBeSaved = new User(1l, "user@email.com", new BCryptPasswordEncoder().encode("password"), "ROLE_USER,ROLE_ADMIN");
-        User userSaved = this.repository.save(userToBeSaved);
+        User toBeSaved = new User(1l, "user@email.com", new BCryptPasswordEncoder().encode("password"), "ROLE_USER,ROLE_ADMIN");
+        User saved = this.repository.save(toBeSaved);
 
-        User findedUser = this.repository.findByName(userSaved.getUsername());
+        User founded = this.repository.findByName(saved.getUsername());
 
-        Assertions.assertThat(findedUser).isNotNull();
-        Assertions.assertThat(findedUser.getId()).isEqualTo(userSaved.getId());
-        Assertions.assertThat(findedUser.getUsername()).isEqualTo(userSaved.getUsername());
+        Assertions.assertThat(founded).isNotNull();
+        Assertions.assertThat(founded.getId()).isEqualTo(saved.getId());
+        Assertions.assertThat(founded.getUsername()).isEqualTo(saved.getUsername());
     }
-
-
 
 }
