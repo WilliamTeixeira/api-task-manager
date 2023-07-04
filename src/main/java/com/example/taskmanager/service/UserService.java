@@ -1,24 +1,16 @@
 package com.example.taskmanager.service;
 
-import com.auth0.jwt.algorithms.Algorithm;
-import com.example.taskmanager.domain.person.Person;
-import com.example.taskmanager.domain.person.PersonCreateDTO;
-import com.example.taskmanager.domain.person.PersonDetailDTO;
 import com.example.taskmanager.domain.user.User;
 import com.example.taskmanager.domain.user.UserCreateDTO;
 import com.example.taskmanager.domain.user.UserDetailDTO;
 import com.example.taskmanager.domain.user.UserReplaceDTO;
 import com.example.taskmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 
 @Service
 public class UserService implements UserDetailsService {
