@@ -50,7 +50,7 @@ class RegisterControllerTest {
     @WithMockUser
     @DisplayName("Given that any fields are correct When create method is called Then de transaction will be successful")
     void createPersistUsesWhenSuccessful() throws Exception {
-        var jsonToBeSend = userCreateDTOJson.write(new UserCreateDTO(UserRepositoryMock.createUserToBeSabe())).getJson();
+        var jsonToBeSend = userCreateDTOJson.write(new UserCreateDTO(UserRepositoryMock.createUserToBeSave())).getJson();
         var jsonToBeCompare = userDetailDTOJson.write(new UserDetailDTO(UserRepositoryMock.createValidUser())).getJson();
 
         MockHttpServletResponse response = mockMvc.perform(

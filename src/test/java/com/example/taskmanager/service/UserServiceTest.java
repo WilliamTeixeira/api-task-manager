@@ -93,7 +93,7 @@ class UserServiceTest {
     @Test
     @DisplayName("Given that all fields are correct When save methods is called Then the transaction will be successful")
     void savePersistUserWhenSuccessful() throws Exception {
-        var toBeSave = new UserCreateDTO(UserRepositoryMock.createUserToBeSabe());
+        var toBeSave = new UserCreateDTO(UserRepositoryMock.createUserToBeSave());
         var toBeCompare = new UserDetailDTO((UserRepositoryMock.createValidUser()));
 
         var saved = userService.save(toBeSave);
