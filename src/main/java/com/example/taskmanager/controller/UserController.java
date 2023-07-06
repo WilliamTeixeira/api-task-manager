@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<UserDetailDTO> findByIde(@PathVariable Long id){
+    public ResponseEntity<UserDetailDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(userService.findById(id));
     }
     @GetMapping("/username/{username}")
