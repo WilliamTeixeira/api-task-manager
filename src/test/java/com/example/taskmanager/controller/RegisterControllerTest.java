@@ -29,7 +29,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureJsonTesters
 @AutoConfigureMockMvc
 @DisplayName("Test for Register Controller Endpoints")
-//@WebMvcTest(RegisterController.class)
 class RegisterControllerTest {
 
     @Autowired
