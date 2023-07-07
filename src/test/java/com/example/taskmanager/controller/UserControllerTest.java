@@ -75,7 +75,7 @@ class UserControllerTest {
         Assertions.assertThat(response.getStatus()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
     @Test
-    @WithMockUser
+    @WithMockUser(roles = "ADMIN")
     @DisplayName("Given that Id fields are not found When delete method is called Then returns http not found status 404")
     void deleteReturnNotFoundWhenIdNotFound() throws Exception {
         Mockito.doThrow(new EntityNotFoundException("User Not Found"))
