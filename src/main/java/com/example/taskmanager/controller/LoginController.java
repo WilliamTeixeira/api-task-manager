@@ -1,6 +1,6 @@
 package com.example.taskmanager.controller;
 
-import com.example.taskmanager.configuration.security.TokenJwtDTO;
+import com.example.taskmanager.infrastructure.security.TokenJwtDTO;
 import com.example.taskmanager.domain.user.User;
 import com.example.taskmanager.domain.user.UserLoginDTO;
 import com.example.taskmanager.service.TokenService;

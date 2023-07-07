@@ -1,4 +1,4 @@
-package com.example.taskmanager.configuration.security;
+package com.example.taskmanager.infrastructure.security;
 
 import com.example.taskmanager.repository.UserRepository;
 import com.example.taskmanager.service.TokenService;

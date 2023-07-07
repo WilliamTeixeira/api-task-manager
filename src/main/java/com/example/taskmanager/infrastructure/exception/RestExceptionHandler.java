@@ -1,4 +1,4 @@
-package com.example.taskmanager.exception;
+package com.example.taskmanager.infrastructure.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
