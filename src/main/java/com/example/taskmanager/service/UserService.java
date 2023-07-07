@@ -5,6 +5,7 @@ import com.example.taskmanager.domain.user.UserCreateDTO;
 import com.example.taskmanager.domain.user.UserDetailDTO;
 import com.example.taskmanager.domain.user.UserReplaceDTO;
 import com.example.taskmanager.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,10 +25,17 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDetailDTO findById(Long id) {
-        return new UserDetailDTO(repository.getReferenceById(id));
+        User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("User Not Found"));
+        return new UserDetailDTO(user);
     }
 
-    public UserDetailDTO findByUsername(String username){
+    public UserDetailDTO findByUsername(String username) {
+        User user = repository.findByName(username);
+
+        if (user == null) {
+            throw new EntityNotFoundException("User Not Found");
+        }
+
         return new UserDetailDTO(repository.findByName(username));
     }
 
@@ -44,11 +52,11 @@ public class UserService implements UserDetailsService {
     }
 
     public void delete(Long id) {
-        User user = repository.getReferenceById(id);
+        User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("User Not Found"));
         repository.delete(user);
     }
 
-    public UserDetailDTO replace(UserReplaceDTO userReplaceDTO){
+    public UserDetailDTO replace(UserReplaceDTO userReplaceDTO) {
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
         User savedUser = repository.getReferenceById(userReplaceDTO.id());
