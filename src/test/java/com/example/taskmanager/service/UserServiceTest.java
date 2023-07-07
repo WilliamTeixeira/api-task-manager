@@ -17,6 +17,8 @@ import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 @DisplayName("Test for User Service")
 @ExtendWith(SpringExtension.class)
 class UserServiceTest {
@@ -37,8 +39,8 @@ class UserServiceTest {
         Mockito.when(userRepository.getReferenceById(ArgumentMatchers.anyLong()))
                 .thenReturn(UserRepositoryMock.createValidUser());
 
-        Mockito.when(userRepository.findByName(ArgumentMatchers.anyString()))
-                .thenReturn(UserRepositoryMock.createValidUser());
+        Mockito.when(userRepository.findById(ArgumentMatchers.anyLong()))
+                        .thenReturn(Optional.of(UserRepositoryMock.createValidUser()));
 
         Mockito.when(userRepository.findByName(ArgumentMatchers.anyString()))
                 .thenReturn(UserRepositoryMock.createValidUser());
