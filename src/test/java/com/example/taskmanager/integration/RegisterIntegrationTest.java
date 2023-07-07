@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("Integrations Test for Register User")
-public class RegisterIntegationTest {
+public class RegisterIntegrationTest {
 
 
     @Autowired
