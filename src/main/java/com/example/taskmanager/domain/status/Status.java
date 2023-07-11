@@ -1,4 +1,4 @@
-package com.example.taskmanager.domain;
+package com.example.taskmanager.domain.status;
 
 public enum Status {
     PENDING,
