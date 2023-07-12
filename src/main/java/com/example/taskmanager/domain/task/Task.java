@@ -17,6 +17,7 @@ import java.util.List;
 @Entity(name = "Task")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
