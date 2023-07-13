@@ -1,16 +1,10 @@
 package com.example.taskmanager.domain.task;
 
-import com.example.taskmanager.domain.comment.Comment;
 import com.example.taskmanager.domain.comment.CommentDetailDTO;
-import com.example.taskmanager.domain.person.Person;
 import com.example.taskmanager.domain.status.Status;
-import com.example.taskmanager.domain.status.StatusHistory;
 import com.example.taskmanager.domain.status.StatusHistoryDetailDTO;
-import com.example.taskmanager.domain.user.User;
-import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public record TaskDetailDTO(

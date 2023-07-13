@@ -4,6 +4,7 @@ import com.example.taskmanager.domain.person.PersonCreateDTO;
 import com.example.taskmanager.domain.person.PersonDetailDTO;
 import com.example.taskmanager.domain.task.TaskCreateDTO;
 import com.example.taskmanager.domain.task.TaskDetailDTO;
+import com.example.taskmanager.domain.task.TaskReplaceDTO;
 import com.example.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,13 @@ public class TaskController {
     public ResponseEntity delete(@PathVariable Long id){
         taskService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<TaskDetailDTO> update(@RequestBody @Valid TaskReplaceDTO taskReplaceDTO){
+        TaskDetailDTO taskDetailDTO = taskService.replace(taskReplaceDTO);
+        return ResponseEntity.ok(taskDetailDTO);
     }
 
 
