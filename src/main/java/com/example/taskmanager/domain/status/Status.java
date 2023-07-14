@@ -4,5 +4,6 @@ public enum Status {
     PENDING,
     IN_PROGRESS,
     IN_TEST,
-    DISAPPROVED
+    DISAPPROVED,
+    CONCLUDED
 }

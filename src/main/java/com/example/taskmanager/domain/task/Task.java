@@ -58,4 +58,13 @@ public class Task {
 
     private LocalDateTime updatedAt;
 
+    public void updateStatus(Status status) {
+        this.status = status;
+
+        if (status.equals(Status.CONCLUDED)) {
+            this.completedAt = LocalDateTime.now();
+        } else {
+            this.completedAt = null;
+        }
+    }
 }

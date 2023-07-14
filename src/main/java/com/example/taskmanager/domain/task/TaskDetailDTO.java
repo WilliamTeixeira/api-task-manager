@@ -18,10 +18,7 @@ public record TaskDetailDTO(
         Enum<Status> status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        LocalDateTime completedAt,
-        List<CommentDetailDTO> comments,
-        List<StatusHistoryDetailDTO> statusHistory
-
+        LocalDateTime completedAt
         ) {
     public TaskDetailDTO(Task task){
         this(
@@ -35,9 +32,7 @@ public record TaskDetailDTO(
                 task.getStatus(),
                 task.getCreatedAt(),
                 task.getUpdatedAt(),
-                task.getCompletedAt(),
-                (List<CommentDetailDTO>) task.getComments().stream().map(CommentDetailDTO::new),
-                (List<StatusHistoryDetailDTO>) task.getStatusHistories().stream().map(StatusHistoryDetailDTO::new)
+                task.getCompletedAt()
         );
     }
 }
