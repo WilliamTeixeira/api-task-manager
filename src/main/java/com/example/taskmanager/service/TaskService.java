@@ -2,16 +2,15 @@ package com.example.taskmanager.service;
 
 import com.example.taskmanager.domain.person.Person;
 import com.example.taskmanager.domain.status.Status;
-import com.example.taskmanager.domain.task.Task;
-import com.example.taskmanager.domain.task.TaskCreateDTO;
-import com.example.taskmanager.domain.task.TaskDetailDTO;
-import com.example.taskmanager.domain.task.TaskReplaceDTO;
+import com.example.taskmanager.domain.task.*;
 import com.example.taskmanager.domain.user.User;
 import com.example.taskmanager.repository.PersonRepository;
 import com.example.taskmanager.repository.TaskRepository;
 import com.example.taskmanager.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -72,6 +71,10 @@ public class TaskService {
     public TaskDetailDTO replace(TaskReplaceDTO dto) {
         Task task = taskRepository.getReferenceById(dto.id());
 
+        if (task.getId() == null) {
+            throw new EntityNotFoundException("Task not found!");
+        }
+
         if (dto.userFromId() != null) {
             if(!userRepository.existsById(dto.userFromId())) {
                 throw new EntityNotFoundException("User From not found!");
@@ -121,6 +124,18 @@ public class TaskService {
         return new TaskDetailDTO(taskReplaced);
     }
 
+    public Page<TaskDetailDTO> listAll(Pageable pageable) {
+        return taskRepository.findAll(pageable)
+                .map(TaskDetailDTO::new);
+    }
+
+    public TaskDetailWithCommentsDTO findById(Long id) {
+        Task task = taskRepository.getReferenceById(id);
+
+        return new TaskDetailWithCommentsDTO(task);
+    }
+
+
     private User getUserContext() {
         User user = null;
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -129,7 +144,6 @@ public class TaskService {
             String userName = ((UserDetails) principal).getUsername();
             user = userRepository.findByName(userName);
         }
-
         return user;
     }
 }

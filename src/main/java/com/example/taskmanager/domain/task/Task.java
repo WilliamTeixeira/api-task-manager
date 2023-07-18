@@ -43,13 +43,13 @@ public class Task {
 
     private String description;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StatusHistory> statusHistories  = new ArrayList<>();
 
     private LocalDateTime createdAt;

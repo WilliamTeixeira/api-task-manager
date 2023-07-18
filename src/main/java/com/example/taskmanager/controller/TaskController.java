@@ -1,13 +1,15 @@
 package com.example.taskmanager.controller;
 
-import com.example.taskmanager.domain.person.PersonCreateDTO;
-import com.example.taskmanager.domain.person.PersonDetailDTO;
 import com.example.taskmanager.domain.task.TaskCreateDTO;
 import com.example.taskmanager.domain.task.TaskDetailDTO;
+import com.example.taskmanager.domain.task.TaskDetailWithCommentsDTO;
 import com.example.taskmanager.domain.task.TaskReplaceDTO;
 import com.example.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -44,5 +46,14 @@ public class TaskController {
         return ResponseEntity.ok(taskDetailDTO);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<Page<TaskDetailDTO>> listAll(@PageableDefault(size = 10, sort = {"id"}) Pageable pageable) {
+        return ResponseEntity.ok(taskService.listAll(pageable));
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<TaskDetailWithCommentsDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(taskService.findById(id));
+    }
 
 }
