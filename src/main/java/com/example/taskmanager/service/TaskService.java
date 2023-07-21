@@ -29,19 +29,19 @@ public class TaskService {
         var userCreator = getUserContext();
 
         if (userCreator == null) {
-            throw new EntityNotFoundException("User From not found!");
+            throw new EntityNotFoundException("UserCreator not found!");
         }
 
         if(!userRepository.existsById(dto.userFromId())) {
-            throw new EntityNotFoundException("User From not found!");
+            throw new EntityNotFoundException("UserFrom not found!");
         }
 
         if(!userRepository.existsById(dto.userToId())) {
-            throw new EntityNotFoundException("User From not found!");
+            throw new EntityNotFoundException("UserTo not found!");
         }
 
         if (!personRepository.existsById(dto.personRequestingId())) {
-            throw new EntityNotFoundException("Person Requesting not found!");
+            throw new EntityNotFoundException("PersonRequesting not found!");
         }
 
         var userFrom = userRepository.getReferenceById(dto.userFromId());
