@@ -2,6 +2,7 @@ package com.example.taskmanager.service;
 
 import com.example.taskmanager.domain.task.TaskCreateDTO;
 import com.example.taskmanager.domain.task.TaskDetailDTO;
+import com.example.taskmanager.domain.task.TaskReplaceDTO;
 import com.example.taskmanager.mock.PersonRepositoryMock;
 import com.example.taskmanager.mock.TaskRepositoryMock;
 import com.example.taskmanager.mock.UserRepositoryMock;
@@ -133,11 +134,40 @@ class TaskServiceTest {
                 .hasMessageContaining("PersonRequesting Not Found");
     }
     @Test
-    void delete() {
+    @DisplayName("Given that Id field is correct When delete method is called Then the transaction will be successful")
+    void deletePersistTaskWhenSuccessful() {
+        Assertions.assertThatCode(()-> taskService.delete(1l))
+                .doesNotThrowAnyException();
     }
 
     @Test
-    void replace() {
+    @DisplayName("Given thad all fields are correct When replace method is called Then the transaction will be successful ")
+    void replacePersistTaskWhenSuccessful() {
+        var toBeSave = new TaskReplaceDTO(TaskRepositoryMock.createValidTask());
+        var toBeCompare = new TaskDetailDTO(TaskRepositoryMock.createValidTask());
+
+        var saved = taskService.replace(toBeSave);
+
+        Assertions.assertThat(saved)
+                .isNotNull()
+                .isInstanceOf(TaskDetailDTO.class);
+
+        Assertions.assertThat(saved.title()).isEqualTo(toBeCompare.title());
+    }
+
+    @Test
+    @DisplayName("Given thad all fields are correct When replace method is called Then the transaction will be successful ")
+    void replacePersistTaskWithNullFieldsWhenSuccessful() {
+        var toBeSave = new TaskReplaceDTO(1l,null,null,null,"changed title","",null);
+        var toBeCompare = new TaskDetailDTO(TaskRepositoryMock.createValidTask());
+
+        var saved = taskService.replace(toBeSave);
+
+        Assertions.assertThat(saved)
+                .isNotNull()
+                .isInstanceOf(TaskDetailDTO.class);
+
+        Assertions.assertThat(saved.title()).isEqualTo(toBeCompare.title());
     }
 
     @Test

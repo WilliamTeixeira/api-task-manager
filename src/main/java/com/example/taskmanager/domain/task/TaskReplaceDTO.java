@@ -11,4 +11,15 @@ public record TaskReplaceDTO(
         String title,
         String description,
         Status status ) {
+    public TaskReplaceDTO(Task task) {
+        this(
+                task.getId(),
+                task.getUserFrom().getId(),
+                task.getUserTo().getId(),
+                task.getPersonRequesting().getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus()
+        );
+    }
 }
