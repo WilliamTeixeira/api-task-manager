@@ -9,7 +9,9 @@ import com.example.taskmanager.domain.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class TaskRepositoryMock {
                 null,
                 Status.PENDING,
                 null,
-                LocalDateTime.now(),
+                LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT),
                 null,
                 null
         );
@@ -50,7 +52,7 @@ public class TaskRepositoryMock {
                 comments,
                 Status.PENDING,
                 statusHistories,
-                LocalDateTime.now(),
+                LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT),
                 null,
                 null
         );

@@ -39,7 +39,7 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @Transactional
     public ResponseEntity<TaskDetailDTO> update(@RequestBody @Valid TaskReplaceDTO taskReplaceDTO){
         TaskDetailDTO taskDetailDTO = taskService.replace(taskReplaceDTO);
