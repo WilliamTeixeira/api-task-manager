@@ -2,6 +2,7 @@ package com.example.taskmanager.service;
 
 import com.example.taskmanager.domain.task.TaskCreateDTO;
 import com.example.taskmanager.domain.task.TaskDetailDTO;
+import com.example.taskmanager.domain.task.TaskDetailWithCommentsDTO;
 import com.example.taskmanager.domain.task.TaskReplaceDTO;
 import com.example.taskmanager.mock.PersonRepositoryMock;
 import com.example.taskmanager.mock.TaskRepositoryMock;
@@ -171,10 +172,28 @@ class TaskServiceTest {
     }
 
     @Test
-    void listAll() {
+    @DisplayName("Given that tasks exists in database When listAll method is called Then the transaction will be successful")
+    void listAllReturnsAllTasksWhenSuccessful() throws Exception {
+        var pageCompare = taskService.listAll(PageRequest.of(1,1));
+
+        Assertions.assertThat(pageCompare)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(2);
     }
 
     @Test
-    void findById() {
+    @DisplayName("Given that Id field exist When findById method is called Then  the transaction will be successful")
+    void findByIdFindTaskWhenSuccessful() throws Exception {
+        var toBeCompare = new TaskDetailWithCommentsDTO(TaskRepositoryMock.createValidTask());
+
+        var found = taskService.findById(toBeCompare.id());
+
+        Assertions.assertThat(found)
+                .isNotNull()
+                .isInstanceOf(TaskDetailWithCommentsDTO.class);
+
+        Assertions.assertThat(found.id()).isEqualTo(toBeCompare.id());
+        Assertions.assertThat(found.status()).isEqualTo(toBeCompare.status());
     }
 }
